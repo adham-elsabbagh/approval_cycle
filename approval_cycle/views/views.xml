@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Main Menu: Approval System -->
+        <menuitem id="menu_approval_system_root"
+                  name="Approval System"
+                  sequence="5"
+                  groups="base.group_system"/>
+
+        <!-- Submenu: Studio Approval Rules -->
+        <menuitem id="menu_studio_approval_rule"
+                  name="Studio Approval Rules"
+                  sequence="10"
+                  action="web_studio.studio_approval_rule_action"
+                  parent="menu_approval_system_root"
+                  groups="base.group_system"/>
+
+
+    </data>
+</odoo>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Record Rule for Approval Requests: Users see their own requests or requests pending their approval -->
+        <record id="approval_request_user_rule" model="ir.rule">
+            <field name="name">Approval Request: User Access</field>
+            <field name="model_id" ref="model_approval_request"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/> <!-- Allow writes for state changes -->
+            <field name="perm_create" eval="True"/> <!-- Allow system to create -->
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">['|', '|',
+                ('origin_user_id','=',user.id),
+                ('current_approver_ids','in',[user.id]),
+                ('create_uid','=',user.id)
+                ]
+            </field>
+        </record>
+
+        <!-- Record Rule for Approval Requests: Admins see everything -->
+        <record id="approval_request_admin_rule" model="ir.rule">
+            <field name="name">Approval Request: Admin Access</field>
+            <field name="model_id" ref="model_approval_request"/>
+            <field name="groups" eval="[(4, ref('custom_approval_system.group_dynamic_approval_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="domain_force">[(1, '=', 1)]</field> <!-- Admins see all -->
+        </record>
+
+        <!-- Similar rules might be needed for approval.request.log if sensitive -->
+
+    </data>
+</odoo>

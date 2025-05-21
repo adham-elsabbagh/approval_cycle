@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dynamic_approval_rule_admin,dynamic.approval.rule admin,model_dynamic_approval_rule,custom_approval_system.group_dynamic_approval_admin,1,1,1,1
+access_dynamic_approval_rule_step_admin,dynamic.approval.rule.step admin,model_dynamic_approval_rule_step,custom_approval_system.group_dynamic_approval_admin,1,1,1,1
+access_approval_request_user,approval.request user,model_approval_request,base.group_user,1,1,1,0
+access_approval_request_admin,approval.request admin,model_approval_request,custom_approval_system.group_dynamic_approval_admin,1,1,1,1
+access_approval_request_log_user,approval.request.log user,model_approval_request_log,base.group_user,1,0,0,0
+access_approval_request_log_admin,approval.request.log admin,model_approval_request_log,custom_approval_system.group_dynamic_approval_admin,1,1,1,1
+access_studio_approval_method,access_studio_approval_method,model_studio_approval_method,base.group_user,1,1,1,1
+
+

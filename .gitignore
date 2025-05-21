@@ -1,0 +1,70 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.py[co]
+
+# Caches
+.cache/
+.pre-commit-cache/
+
+# Pre-commit config (keep the config file, ignore the cache only)
+!.pre-commit-config.yaml
+
+# Dotfiles (allow important ones)
+.*
+!.gitignore
+!.editorconfig
+!.eslintrc.yml
+!.flake8
+!.gitlab-ci.yml
+!.isort.cfg
+!.prettierrc.yml
+!.pylintrc
+!.pylintrc-mandatory
+!.ruff.toml
+
+# Build artifacts and metadata
+*.egg-info/
+build/
+dist/
+upgrade.py
+upgrade.log
+*.deb
+
+# Emacs and editor backup files
+*~
+
+# Mercurial conflict files
+*.orig
+
+# Odoo filestore
+openerp/filestore/
+
+# Odoo-specific development paths
+/a.r.odoo/
+
+# Virtualenv and related Python environments
+.venv/
+env/
+venv/
+bin/
+include/
+lib/
+lib64/
+man/
+share/
+src/
+eggs/
+develop-eggs/
+parts/
+var/
+usr/
+etc/
+
+# Windows installer (Odoo-specific)
+install/win32/*.bat
+install/win32/meta.py
+
+# Project-specific
+status

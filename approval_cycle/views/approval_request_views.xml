@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- list View for Approval Request -->
+        <record id="view_approval_request_list" model="ir.ui.view">
+            <field name="name">approval.request.list</field>
+            <field name="model">approval.request</field>
+            <field name="arch" type="xml">
+                <list string="Approval Requests" decoration-info="state == 'pending'"
+                      decoration-success="state == 'approved'" decoration-danger="state == 'rejected'"
+                      decoration-muted="state == 'cancel'">
+                    <field name="name"/>
+                    <field name="resource_ref" string="Document"/>
+                    <field name="rule_id"/>
+                    <field name="origin_user_id" widget="many2one_avatar_user"/>
+                    <field name="request_date"/>
+                    <field name="current_step_id"/>
+                    <field name="current_approver_ids" widget="many2many_avatar_user"/>
+                    <field name="state"/>
+                    <field name="activity_ids" widget="list_activity" optional="show"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View for Approval Request -->
+        <record id="view_approval_request_form" model="ir.ui.view">
+            <field name="name">approval.request.form</field>
+            <field name="model">approval.request</field>
+            <field name="arch" type="xml">
+                <form string="Approval Request">
+                    <header>
+                        <button name="action_approve" string="Approve" type="object" class="oe_highlight"
+                                invisible="(state != 'pending') or (can_user_approve == False)"/>
+                        <button name="action_reject" string="Reject" type="object" class="oe_highlight"
+                                invisible="(state != 'pending') or (can_user_approve == False)"/>
+                        <!-- Add Cancel button? -->
+                        <field name="state" widget="statusbar" statusbar_visible="pending,approved,rejected"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="resource_ref" string="Document" readonly="1"/>
+                                <field name="rule_id"/>
+                                <field name="origin_user_id" widget="many2one_avatar_user" readonly="1"/>
+                                <field name="request_date" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="current_step_id" readonly="1"/>
+                                <field name="current_approver_ids" widget="many2many_avatar_user" readonly="1"/>
+                                <field name="can_user_approve" invisible="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Approval Log" name="approval_log">
+                                <field name="log_ids" readonly="1">
+                                    <list string="Log">
+                                        <field name="decision_date"/>
+                                        <field name="step_id"/>
+                                        <field name="user_id" widget="many2one_avatar_user"/>
+                                        <field name="decision"/>
+                                        <field name="reason"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View for Approval Request -->
+        <record id="view_approval_request_search" model="ir.ui.view">
+            <field name="name">approval.request.search</field>
+            <field name="model">approval.request</field>
+            <field name="arch" type="xml">
+                <search string="Search Approval Requests">
+                    <field name="name" string="Request"/>
+                    <field name="resource_ref" string="Document"/>
+                    <field name="rule_id"/>
+                    <field name="origin_user_id"/>
+                    <field name="current_approver_ids" string="Current Approver"/>
+                    <filter string="My Requests" name="my_requests" domain="[('origin_user_id', '=', uid)]"/>
+                    <!--                    <filter string="Pending My Approval" name="pending_my_approval" domain="[('state', '=', 'pending'), ('current_approver_ids', 'in', [uid])]"/>-->
+                    <separator/>
+                    <filter string="Pending" name="pending" domain="[('state', '=', 'pending')]"/>
+                    <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
+                    <filter string="Rejected" name="rejected" domain="[('state', '=', 'rejected')]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Status" name="groupby_state" context="{'group_by': 'state'}"/>
+                        <filter string="Rule" name="groupby_rule" context="{'group_by': 'rule_id'}"/>
+                        <filter string="Model" name="groupby_model" context="{'group_by': 'res_model'}"/>
+                        <filter string="Requester" name="groupby_requester" context="{'group_by': 'origin_user_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action for Approval Requests -->
+        <record id="action_approval_request_all" model="ir.actions.act_window">
+            <field name="name">All Approval Requests</field>
+            <field name="res_model">approval.request</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_approval_request_search"/>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No approval requests found.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_approval_request_my" model="ir.actions.act_window">
+            <field name="name">My Approval Requests</field>
+            <field name="res_model">approval.request</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_approval_request_search"/>
+            <field name="context">{'search_default_my_requests': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    You have not created any approval requests yet.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_approval_request_to_approve" model="ir.actions.act_window">
+            <field name="name">Requests to Approve</field>
+            <field name="res_model">approval.request</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_approval_request_search"/>
+            <field name="context">{'search_default_pending_my_approval': 1}</field>
+            <field name="domain">[('state', '=', 'pending'), ('current_approver_ids', 'in', [uid])]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No approval requests waiting for your action.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Items for Approval Requests -->
+        <menuitem
+                id="menu_approval_request_root"
+                name="Approvals"
+                sequence="49"
+                web_icon="custom_approval_system,static/description/icon.png"/>
+
+        <menuitem
+                id="menu_approval_request_to_approve"
+                name="To Approve"
+                parent="menu_approval_request_root"
+                action="action_approval_request_to_approve"
+                sequence="10"/>
+
+        <menuitem
+                id="menu_approval_request_my"
+                name="My Requests"
+                parent="menu_approval_request_root"
+                action="action_approval_request_my"
+                sequence="20"/>
+
+        <menuitem
+                id="menu_approval_request_all"
+                name="All Requests"
+                parent="menu_approval_request_root"
+                action="action_approval_request_all"
+                sequence="30"
+                groups="base.group_system"/> <!-- Only show All to admins? -->
+
+    </data>
+</odoo>
+
